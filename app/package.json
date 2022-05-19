@@ -8,7 +8,10 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "node-sass": "^7.0.1",
+    "sass-loader": "^13.0.0",
     "vue": "^3.2.33",
+    "vue-ellipse-progress": "^2.1.1",
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
@@ -17,8 +20,9 @@
     "@vue/eslint-config-prettier": "^7.0.0",
     "eslint": "^8.5.0",
     "eslint-plugin-vue": "^8.2.0",
+    "http-server": "^14.1.0",
     "prettier": "^2.5.1",
-    "vite": "^2.9.5",
-    "http-server": "^14.1.0"
+    "sass": "^1.51.0",
+    "vite": "^2.9.5"
   }
 }

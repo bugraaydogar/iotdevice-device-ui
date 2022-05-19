@@ -1,0 +1,214 @@
+@import 'styles.css';
+
+:host {
+  display: block;
+}
+
+.header {
+  padding: 12px 0;
+  text-align: center;
+  background: #222;
+  img {
+    width: 157px;
+    height: 50px;
+  }
+}
+
+.wrapper {
+  margin: 50px 0 75px;
+}
+
+.tesla-battery {
+  width: 1050px;
+  margin: 0 auto;
+  h1 {
+    font-family: 'RobotoNormal';
+    font-weight: 100;
+    font-size: 38px;
+    text-align: center;
+    letter-spacing: 3px;
+    padding-top: 3px;
+  }
+  h3 {
+    font-family: 'RobotoNormal';
+    font-weight: 100;
+    font-size: 38px;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+  table {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  &__notice {
+    margin: 20px 0;
+    font-size: 15px;
+    color: #666;
+    line-height: 20px;
+  }
+}
+
+
+@mixin prefix($property, $value) {
+  $prefixes: (webkit moz ms o);
+  @each $prefix in $prefixes {
+    #{'-' + $prefix + '-' + $property}: $value;
+  }
+  // Output standard non-prefixed declaration
+  #{$property}: $value;
+}
+
+.tesla-car {
+  width: 100%;
+  min-height: 350px;
+  background: #fff url(assets/tesla.jpg) no-repeat top center;
+  background-size: contain;
+}
+
+.tesla-wheels {
+  height: 247px;
+  width: 555px;
+  position: relative;
+  margin: auto;
+}
+
+.tesla-wheel {
+  height: 80px;
+  width: 80px;
+  bottom: 0;
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: cover;
+  &--front {
+    left: 652px;
+  }
+  &--rear {
+    right: -26px;
+  }
+  &--19 {
+    &--45 {
+      background-image: url(assets/wheel-19.png);
+      @include prefix(animation, infinite-spinning 230ms steps(6) infinite);
+    }
+    &--50 {
+      background-image: url(assets/wheel-19.png);
+      @include prefix(animation, infinite-spinning 200ms steps(6) infinite);
+    }
+    &--55 {
+      background-image: url(assets/wheel-19.png);
+      @include prefix(animation, infinite-spinning 170ms steps(6) infinite);
+    }
+    &--60 {
+      background-image: url(assets/wheel-19.png);
+      @include prefix(animation, infinite-spinning 140ms steps(6) infinite);
+    }
+    &--65 {
+      background-image: url(assets/wheel-19.png);
+      @include prefix(animation, infinite-spinning 110ms steps(6) infinite);
+    }
+    &--70 {
+      background-image: url(assets/wheel-19.png);
+      @include prefix(animation, infinite-spinning 80ms steps(6) infinite);
+    }
+  }
+  &--21 {
+    &--45 {
+      background-image: url(assets/wheel-21.png);
+      @include prefix(animation, infinite-spinning 480ms steps(12) infinite);
+    }
+    &--50 {
+      background-image: url(assets/wheel-21.png);
+      @include prefix(animation, infinite-spinning 400ms steps(12) infinite);
+    }
+    &--55 {
+      background-image: url(assets/wheel-21.png);
+      @include prefix(animation, infinite-spinning 320ms steps(12) infinite);
+    }
+    &--60 {
+      background-image: url(assets/wheel-21.png);
+      @include prefix(animation, infinite-spinning 240ms steps(12) infinite);
+    }
+    &--65 {
+      background-image: url(assets/wheel-21.png);
+      @include prefix(animation, infinite-spinning 160ms steps(12) infinite);
+    }
+    &--70 {
+      background-image: url(assets/wheel-21.png);
+      @include prefix(animation, infinite-spinning 80ms steps(12) infinite);
+    }
+  }
+}
+
+@keyframes infinite-spinning {
+  from {
+    @include prefix(transform, rotate(0deg));
+  }
+  to {
+    @include prefix(transform, rotate(360deg));
+  }
+}
+
+@-webkit-keyframes infinite-spinning {
+  from {
+    @include prefix(transform, rotate(0deg));
+  }
+  to {
+    @include prefix(transform, rotate(360deg));
+  }
+}
+
+
+.tesla-wheels {
+  float: left;
+  width: 355px;
+  &__title {
+    letter-spacing: 2px;
+    font-size: 16px;
+  }
+  &__container {
+    margin: 10px 0 0;
+  }
+  &__item {
+    cursor: pointer;
+    width: 47%;
+    height: 65px;
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 20px 0 0 90px;
+    margin: 0 8px 0 0;
+    background-color: #f7f7f7;
+    background-position: 24.21053% 9px;
+    background-repeat: no-repeat;
+    background-size: 44px;
+    &--19 {
+      background-image: url(assets/wheels/19.svg);
+    }
+    &--21 {
+      background-image: url(assets/wheels/21.svg);
+    }
+    &--focused {
+      background-color: #f2f2f2;
+    }
+    &--active {
+      border-color: #39f;
+      box-shadow: inset 0px 0px 0px 1px #39f;
+    }
+    p {
+      font-family: 'RobotoNormal';
+      font-size: 16px;
+      font-weight: 400;
+      color: #333;
+    }
+    input[type='radio'] {
+      border: 0;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+  }
+}
