@@ -1,0 +1,37 @@
+name: iotdevice-device-ui
+base: core20
+version: '0.1' 
+summary: Device UI for Demo Purposes
+description: |
+  This is the main UI application for Demo purposes
+
+grade: stable
+confinement: strict
+
+apps:
+  ui-app:
+    command: bin/npm run dev
+  ui-service:
+    command: launch.sh
+    daemon: simple
+    plugs:
+      - network
+      - network-bind
+
+parts:
+  ui:
+    plugin: npm
+    npm-node-version: 16.15.0
+    source: app
+    override-build: |
+      # install node dependencies
+      snapcraftctl build
+      # Install and Build Project
+      npm install
+      npm run build
+      mkdir -p $SNAPCRAFT_PART_INSTALL/static/
+      cp -r dist/* $SNAPCRAFT_PART_INSTALL/static/
+
+  launcher:
+    source: bin
+    plugin: dump
