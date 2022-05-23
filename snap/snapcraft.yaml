@@ -12,7 +12,7 @@ apps:
   ui-app:
     command: bin/npm run dev
   ui-service:
-    command: launch.sh
+    command: bin/http-server $SNAP/static -p 8080 --cors
     daemon: simple
     plugs:
       - network
@@ -31,7 +31,10 @@ parts:
       npm run build
       mkdir -p $SNAPCRAFT_PART_INSTALL/static/
       cp -r dist/* $SNAPCRAFT_PART_INSTALL/static/
+  
+  http-server:
+    plugin: npm
+    npm-node-version: 16.15.0
+    source: https://github.com/http-party/http-server.git
+    source-tag: v14.1.0
 
-  launcher:
-    source: bin
-    plugin: dump

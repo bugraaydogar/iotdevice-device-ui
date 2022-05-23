@@ -89,7 +89,7 @@ export default {
     },
     async revert() {
       console.log("Revert is called...")
-      const payload = ['snapd']
+      const payload = ['iotdevice-device-controller']
       const res = await axios.post("http://localhost:8000/revert", payload)
     }
   },
