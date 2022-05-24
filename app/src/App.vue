@@ -70,27 +70,27 @@ export default {
     },
     async loadData() {
       console.log("Load Data is called")
-      const res = await axios.get("http://localhost:8000/battery-level")
+      const res = await axios.get("http://localhost:5000/battery-level")
       this.battery = res.data.battery
       
       if(this.battery > 100) {
         showModal = true
         await this.revert()
         showModal = false
-        const res = await axios.get("http://localhost:8000/battery-level")
+        const res = await axios.get("http://localhost:5000/battery-level")
         this.battery = res.data.battery
       }
 
     },
     async refresh() {
       console.log("refresh is called")
-      const res = await axios.post("http://localhost:8000/refresh")
+      const res = await axios.post("http://localhost:5000/refresh")
       console.log(JSON. stringify(res))
     },
     async revert() {
       console.log("Revert is called...")
       const payload = ['iotdevice-device-controller']
-      const res = await axios.post("http://localhost:8000/revert", payload)
+      const res = await axios.post("http://localhost:5000/revert", payload)
       console.log(JSON. stringify(res))
     }
   },
