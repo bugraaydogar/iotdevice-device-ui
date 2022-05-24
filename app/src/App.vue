@@ -85,12 +85,13 @@ export default {
     async refresh() {
       console.log("refresh is called")
       const res = await axios.post("http://localhost:8000/refresh")
-      console.log(res)
+      console.log(JSON. stringify(res))
     },
     async revert() {
       console.log("Revert is called...")
       const payload = ['iotdevice-device-controller']
       const res = await axios.post("http://localhost:8000/revert", payload)
+      console.log(JSON. stringify(res))
     }
   },
   beforeDestroy () {
