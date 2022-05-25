@@ -70,14 +70,14 @@ export default {
     },
     async loadData() {
       console.log("Load Data is called")
-      const res = await axios.get("http://localhost:5000/battery-level")
+      const res = await axios.get("http://localhost:3000/battery-level")
       this.battery = res.data.battery
       
       if(this.battery > 100) {
         showModal = true
         await this.revert()
         showModal = false
-        const res = await axios.get("http://localhost:5000/battery-level")
+        const res = await axios.get("http://localhost:3000/battery-level")
         this.battery = res.data.battery
       }
 
@@ -125,12 +125,5 @@ export default {
 .modal__title {
   font-size: 1.5rem;
   font-weight: 700;
-}
-</style>
-
-<style scoped>
-.dark-mode div::v-deep .modal-content {
-  border-color: #2d3748;
-  background-color: #1a202c;
 }
 </style>
