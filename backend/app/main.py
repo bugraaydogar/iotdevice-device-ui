@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
+from pydantic import BaseModel
 
 from .snapd import SnapdClient
+
+class Snap(BaseModel):
+    name: str
 
 app = FastAPI()
 snap_client = SnapdClient()
@@ -28,7 +31,8 @@ def refresh():
 
 
 @app.post("/revert")
-def revert(snaps: List[str]):
-    response = snap_client.revert(snaps)
+def revert(snap: Snap):
+    print(snap.name)
+    response = snap_client.revert(snap.name)
     return response
 

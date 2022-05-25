@@ -14,10 +14,6 @@ class SnapdClient():
         response = self.session.post("http://snapd/v2/snaps", json={"action": "refresh"})
         return response.json()
 
-    def revert(self, snaps):
-        payload = {
-            "action":"revert",
-            "snaps" : snaps
-        }
-        response = self.session.post("http://snapd/v2/snaps", json=payload)
+    def revert(self, snap):
+        response = self.session.post("http://snapd/v2/snaps/"+snap, json={"action": "revert"})
         return response.json()

@@ -74,11 +74,14 @@ export default {
       this.battery = res.data.battery
       
       if(this.battery > 100) {
-        showModal = true
+        this.showModal = true
         await this.revert()
-        showModal = false
         const res = await axios.get("http://localhost:3000/battery-level")
         this.battery = res.data.battery
+      }
+
+      if (this.battery < 100) {
+        this.showModal = false
       }
 
     },
@@ -89,8 +92,7 @@ export default {
     },
     async revert() {
       console.log("Revert is called...")
-      const payload = ['iotdevice-device-controller']
-      const res = await axios.post("http://localhost:5000/revert", payload)
+      const res = await axios.post("http://localhost:5000/revert", {"name": "iotdevice-device-controller"})
       console.log(JSON. stringify(res))
     }
   },
@@ -108,12 +110,12 @@ export default {
 </style>
 
 <style scoped>
-::v-deep .modal-container {
+:deep(.modal-container) {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-::v-deep .modal-content {
+:deep(.modal-content) {
   display: flex;
   flex-direction: column;
   margin: 0 1rem;

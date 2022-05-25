@@ -28,12 +28,15 @@ apps:
     plugs:
       - network
       - network-bind
+      - snapd-control
 
 parts:
   ui:
     plugin: npm
     npm-node-version: 16.15.0
     source: app
+    build-packages:
+      - build-essential
     override-build: |
       # install node dependencies
       snapcraftctl build
