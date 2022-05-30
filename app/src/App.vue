@@ -16,7 +16,7 @@
           </table>
         </div>
       </form>
-      
+
     </div>
   <div>
     <vue-final-modal v-model="showModal" classes="modal-container" content-class="modal-content">
@@ -60,7 +60,7 @@ export default {
     pollBattery () {
       this.polling_battery = setInterval(() => {
         this.loadData()
-      }, 50000)
+      }, 500)
     },
     pollUpdate() {
       this.polling_refresh = setInterval(() => {
@@ -72,7 +72,7 @@ export default {
       console.log("Load Data is called")
       const res = await axios.get("http://localhost:3000/battery-level")
       this.battery = res.data.battery
-      
+
       if(this.battery > 100) {
         this.showModal = true
         await this.revert()
