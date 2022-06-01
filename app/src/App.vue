@@ -8,7 +8,7 @@
         <div>
           <table>
             <tr>
-              <td> <h3> Battery </h3> </td>
+              <td> <h3> Current Speed </h3> </td>
             </tr>
             <tr>
               <td><ve-progress :progress="battery" text-align="center"/></td>
@@ -22,7 +22,7 @@
     <vue-final-modal v-model="showModal" classes="modal-container" content-class="modal-content">
       <span class="modal__title">Internal System Error Detected</span>
       <div class="modal__content">
-        <p>Battery Level can not be more %100, Please wait while reverting to the last known good state</p>
+        <p>Speed can not be more 100 km/h! Please wait while the software reverts to the last known good state</p>
       </div>
     </vue-final-modal>
   </div>
@@ -69,9 +69,10 @@ export default {
 
     },
     async loadData() {
-      console.log("Load Data is called")
+      // console.log("Load Data is called")
       const res = await axios.get("http://localhost:3000/battery-level")
-      this.battery = res.data.battery
+      // Use the battery value for the speed as well
+      this.speed = this.battery = res.data.battery
 
       if(this.battery > 100) {
         this.showModal = true
