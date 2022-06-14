@@ -136,7 +136,7 @@ export default {
         this.current_max_speed = res.data.maxSpeed
       }
 
-      if (this.current_max_speed < this.max_allowed_speed) {
+      if (this.current_max_speed <= this.max_allowed_speed) {
         this.showModal = false
       }
 
