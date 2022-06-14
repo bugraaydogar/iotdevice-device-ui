@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "devextreme": "^21.2.8",
+    "devextreme-vue": "^21.2.8",
     "node-sass": "^7.0.1",
     "sass-loader": "^13.0.0",
     "vue": "^3.2.33",
