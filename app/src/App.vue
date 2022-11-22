@@ -139,6 +139,14 @@ export default {
       // Use the battery value for the speed as well
       this.car_speed = res.data.speed
       this.current_max_speed = res.data.maxSpeed
+      if(this.current_max_speed > this.max_allowed_speed) {
+        this.showModal = true
+        await this.revert()
+        const res = await axios.get("http://localhost:4040/speed-level")
+        this.car_speed = res.data.speed
+        this.current_max_speed = res.data.maxSpeed
+      }
+
       if(this.car_speed > this.current_max_speed) {
               this.showModal2 = true
 	      setTimeout (function() {
@@ -148,13 +156,6 @@ export default {
       } else {
               this.last_correct_speed=this.car_speed
               this.showModal2 = false
-      }
-      if(this.current_max_speed > this.max_allowed_speed) {
-        this.showModal = true
-        await this.revert()
-        const res = await axios.get("http://localhost:4040/speed-level")
-        this.car_speed = res.data.speed
-        this.current_max_speed = res.data.maxSpeed
       }
 
       if (this.current_max_speed <= this.max_allowed_speed) {
