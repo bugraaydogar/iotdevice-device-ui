@@ -12,7 +12,7 @@ snap_client = SnapdClient()
 
 origins = [
     "http://localhost",
-    "http://localhost:8000",
+    "http://localhost:4000",
 ]
 
 app.add_middleware(

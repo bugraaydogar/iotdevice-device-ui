@@ -28,3 +28,4 @@ coverage
 *.sw?
 
 bugraaydogar-credentials.login
+backend/app/__pycache__/*

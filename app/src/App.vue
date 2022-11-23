@@ -9,6 +9,9 @@
           <table>
             <tr>
               <td> <h3> Speed </h3> </td>
+	    </tr>
+	    <tr>
+	      <td> <h4> Max speed served by OTA update: {{ current_max_speed }}</h4> </td>
             </tr>
             <tr>
               <td>
@@ -18,12 +21,12 @@
                       <DxCircularGauge :value="car_speed">
                         <DxSize :width="260"/>
                         <DxValueIndicator
-                          :second-fraction="0.24"
+                          :second-fraction="0.48"
                           type="twoColorNeedle"
                           color="none"
-                          second-color="#f05b41"/>
+                          second-color="#5f43d1" />
                         <DxGeometry :start-angle="225" :end-angle="315" />
-                        <DxScale :start-value="0" :end-value="180" :tick-interval="20" :minor-tick-interval="10" />
+                        <DxScale :start-value="0" :end-value="current_max_speed" :tick-interval="10" :minor-tick-interval="10" />
                       </DxCircularGauge>
                       <div class="speed-value">
                         <span>{{ car_speed }}</span>
@@ -45,11 +48,20 @@
       </div>
     </vue-final-modal>
   </div>
+  <div>
+    <vue-final-modal v-model="showModal2" classes="modal-container" content-class="modal-content">
+      <span class="modal__title">Too fast!</span>
+      <div class="modal__content">
+        <p>Automated speed control tried to reach {{ car_speed}} which violates the limit of {{ current_max_speed }}. Reverting to {{ last_correct_speed }} </p>
+      </div>
+    </vue-final-modal>
+  </div>
+
 
 </div>
 
 </template>
-
+i
 <script>
 import AppHeader from "./components/AppHeader.vue"
 import AppCar from './components/AppCar.vue';
@@ -113,27 +125,37 @@ export default {
     pollSpeed () {
       this.polling_speed = setInterval(() => {
         this.loadData()
-      }, 500)
+      }, 1000)
     },
     pollUpdate() {
       this.polling_refresh = setInterval(() => {
         this.refresh()
-      }, 50000)
+      }, 45000)
 
     },
     async loadData() {
       // console.log("Load Data is called")
-      const res = await axios.get("http://localhost:3000/speed-level")
+      const res = await axios.get("http://localhost:4040/speed-level")
       // Use the battery value for the speed as well
       this.car_speed = res.data.speed
       this.current_max_speed = res.data.maxSpeed
-
       if(this.current_max_speed > this.max_allowed_speed) {
         this.showModal = true
         await this.revert()
-        const res = await axios.get("http://localhost:3000/speed-level")
+        const res = await axios.get("http://localhost:4040/speed-level")
         this.car_speed = res.data.speed
         this.current_max_speed = res.data.maxSpeed
+      }
+
+      if(this.car_speed > this.current_max_speed) {
+              this.showModal2 = true
+	      setTimeout (function() {
+	      	this.showModal2 = false
+	      	this.car_speed = this.last_correct_speed
+	      },1000);
+      } else {
+              this.last_correct_speed=this.car_speed
+              this.showModal2 = false
       }
 
       if (this.current_max_speed <= this.max_allowed_speed) {
@@ -142,11 +164,11 @@ export default {
 
     },
     async refresh() {
-      const res = await axios.post("http://localhost:5000/refresh")
+      const res = await axios.post("http://localhost:4500/refresh")
       console.log(JSON. stringify(res))
     },
     async revert() {
-      const res = await axios.post("http://localhost:5000/revert", {"name": "iotdevice-device-controller"})
+      const res = await axios.post("http://localhost:4500/revert", {"name": "iotdevice-device-controller"})
       console.log(JSON. stringify(res))
     }
   },

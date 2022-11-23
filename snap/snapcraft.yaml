@@ -17,7 +17,7 @@ apps:
   ui-app:
     command: bin/npm run dev
   ui-service:
-    command: bin/http-server $SNAP/static -p 8000 --cors
+    command: bin/http-server $SNAP/static -p 4000 --cors
     daemon: simple
     plugs:
       - network
