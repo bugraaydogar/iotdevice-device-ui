@@ -2,7 +2,11 @@
   <div id="app">
     <app-header />
     <div>
-      <progress-bar :options="options" :value="value" />
+      <h1>Ubuntu Core Over the Air Update</h1>
+      <div class="progress">
+        <h1>Battery Level</h1>
+        <ve-progress :progress="battery_level" />
+      </div>
     </div>
     <div>
       <vue-final-modal
@@ -13,24 +17,8 @@
         <span class="modal__title">Internal System Error Detected</span>
         <div class="modal__content">
           <p>
-            Speed can not be more 100 km/h! Please wait while the software
+            Batter Level can not be more 100%! Please wait while the software
             reverts to the last known good state
-          </p>
-        </div>
-      </vue-final-modal>
-    </div>
-    <div>
-      <vue-final-modal
-        v-model="showModal2"
-        classes="modal-container"
-        content-class="modal-content"
-      >
-        <span class="modal__title">Too fast!</span>
-        <div class="modal__content">
-          <p>
-            Automated speed control tried to reach {{ car_speed }} which
-            violates the limit of {{ current_max_speed }}. Reverting to
-            {{ last_correct_speed }}
           </p>
         </div>
       </vue-final-modal>
@@ -41,33 +29,31 @@ i
 <script>
 import AppHeader from './components/AppHeader.vue';
 import axios from 'axios';
+import { VueEllipseProgress } from 'vue-ellipse-progress';
 
 export default {
   name: 'App',
   components: {
     AppHeader,
+    VueEllipseProgress,
   },
   data() {
     return {
-      title: 'Ubuntu Core Over the Air Update',
-      wheels: 19,
-      max_allowed_speed: 100,
-      current_max_speed: 0,
-      speed: 55,
-      polling_speed: null,
-      car_speed: 0,
+      max_allowed_battery_level: 100,
+      polling_battery_level: null,
+      battery_level: 0,
       polling_refresh: null,
       showModal: false,
     };
   },
   created() {
     this.loadData();
-    this.pollSpeed();
+    this.pollBattery();
     this.pollUpdate();
   },
   methods: {
-    pollSpeed() {
-      this.polling_speed = setInterval(() => {
+    pollBattery() {
+      this.polling_battery_level = setInterval(() => {
         this.loadData();
       }, 1000);
     },
@@ -77,31 +63,16 @@ export default {
       }, 45000);
     },
     async loadData() {
-      // console.log("Load Data is called")
-      const res = await axios.get('http://localhost:4040/speed-level');
-      // Use the battery value for the speed as well
-      this.car_speed = res.data.speed;
-      this.current_max_speed = res.data.maxSpeed;
-      if (this.current_max_speed > this.max_allowed_speed) {
+      const res = await axios.get('http://localhost:4040/battery-level');
+      this.battery_level = res.data.battery;
+      if (this.battery_level > this.max_allowed_battery_level) {
         this.showModal = true;
         await this.revert();
-        const res = await axios.get('http://localhost:4040/speed-level');
-        this.car_speed = res.data.speed;
-        this.current_max_speed = res.data.maxSpeed;
+        const res = await axios.get('http://localhost:4040/battery-level');
+        this.battery_level = res.data.battery;
       }
 
-      if (this.car_speed > this.current_max_speed) {
-        this.showModal2 = true;
-        setTimeout(function () {
-          this.showModal2 = false;
-          this.car_speed = this.last_correct_speed;
-        }, 1000);
-      } else {
-        this.last_correct_speed = this.car_speed;
-        this.showModal2 = false;
-      }
-
-      if (this.current_max_speed <= this.max_allowed_speed) {
+      if (this.battery_level <= this.max_allowed_battery_level) {
         this.showModal = false;
       }
     },
@@ -124,14 +95,20 @@ export default {
 </script>
 
 <style lang="scss">
-.header {
-  padding: 12px 0;
+h1 {
+  font-family: 'RobotoNormal';
+  font-weight: 100;
+  font-size: 38px;
   text-align: center;
-  background: #222;
-  img {
-    width: 157px;
-    height: 50px;
-  }
+  letter-spacing: 3px;
+  padding-top: 3px;
+}
+
+.progress {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  text-align: center;
 }
 </style>
 

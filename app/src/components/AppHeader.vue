@@ -1,9 +1,8 @@
 <template>
   <header class="header">
-    <img :src="logo">
+    <img :src="logo" />
   </header>
 </template>
-
 
 <script>
 import logo from './../assets/logo.png';
@@ -12,12 +11,20 @@ export default {
   name: 'AppHeader',
   data() {
     return {
-      logo
-    }
-  }
-}
+      logo,
+    };
+  },
+};
 </script>
 
-<style>
-
+<style lang="scss">
+.header {
+  padding: 12px 0;
+  text-align: center;
+  background: #222;
+  img {
+    width: 157px;
+    height: 50px;
+  }
+}
 </style>
