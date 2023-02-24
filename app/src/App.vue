@@ -110,6 +110,10 @@ h1 {
   padding: 10px;
   text-align: center;
 }
+
+body {
+  background: white;
+}
 </style>
 
 <style scoped>
