@@ -1,6 +1,6 @@
 name: iotdevice-device-ui
-base: core20
-version: '0.1' 
+base: core22
+version: '22'
 summary: Device UI for Demo Purposes
 description: |
   This is the main UI application for Demo purposes
@@ -33,21 +33,23 @@ apps:
 parts:
   ui:
     plugin: npm
+    npm-include-node: true
     npm-node-version: 16.15.0
     source: app
     build-packages:
       - build-essential
     override-build: |
       # install node dependencies
-      snapcraftctl build
+      craftctl default
       # Install and Build Project
       npm install
       npm run build
-      mkdir -p $SNAPCRAFT_PART_INSTALL/static/
-      cp -r dist/* $SNAPCRAFT_PART_INSTALL/static/
-  
+      mkdir -p "${CRAFT_PART_INSTALL}"/static/
+      cp -r dist/* "${CRAFT_PART_INSTALL}"/static/
+
   http-server:
     plugin: npm
+    npm-include-node: true
     npm-node-version: 16.15.0
     source: https://github.com/http-party/http-server.git
     source-tag: v14.1.0
@@ -55,9 +57,9 @@ parts:
   backend:
     plugin: python
     source: backend
-    requirements: 
+    python-requirements:
       - requirements.txt
-    
+
   python-source:
     source: backend
     plugin: dump
