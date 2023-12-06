@@ -8,10 +8,6 @@ description: |
 grade: stable
 confinement: strict
 
-architectures:
-  - build-on: arm64
-  - build-on: amd64
-
 apps:
   ui-app:
     command: usr/bin/npm run dev
