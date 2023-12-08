@@ -12,7 +12,7 @@ apps:
   ui-app:
     command: usr/bin/npm run dev
   ui-service:
-    command: bin/http-server $SNAP/static -p 4000 --cors
+    command: bin/serve -l 4000 -s $SNAP/static
     daemon: simple
     plugs:
       - network
@@ -51,6 +51,21 @@ parts:
     after: [npm-deps]
     source: https://github.com/http-party/http-server.git
     source-tag: v14.1.0
+
+  pushstate-server:
+    plugin: npm
+    after: [npm-deps]
+    source: https://github.com/scottcorgan/pushstate-server.git
+    source-tag: 3.1.0
+
+  serve:
+    plugin: npm
+    after: [npm-deps]
+    source: https://github.com/vercel/serve.git
+    source-tag: 14.2.1
+    override-build: |
+      npm install pnpm
+      craftctl default
 
   backend:
     plugin: python
