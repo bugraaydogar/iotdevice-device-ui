@@ -1156,7 +1156,7 @@
         <a class="btn" id="btn_init" @click="startVehicle"
           >Start/Stop vehicle</a
         >
-        <a class="btn" id="btn_lights" @click="toggleLights">Toggle lights</a>
+        <!-- <a class="btn" id="btn_lights" @click="toggleLights">Toggle lights</a>
         <a class="btn" id="btn_beam" @click="toggleFullBeam">Toggle fullbeam</a>
         <a class="btn" id="btn_seat" @click="toggleSeatBelt">Toggle seatbelt</a>
         <a class="btn" id="btn_acc" @mousedown="mousedown" @mouseup="mouseup"> Accelerate</a>
@@ -1165,14 +1165,24 @@
         <a class="btn" id="btn_gear_n" @click="gearN">N</a>
         <a class="btn" id="btn_gear_d" @click="gearD">D</a>
         <a class="btn" id="btn_v1_1" @click="version_1">v1_1</a>
-        <a class="btn" id="btn_v2_1" @click="version_2">v2_2</a>
+        <a class="btn" id="btn_v2_1" @click="version_2">v2_2</a> -->
       </div>
+      <div style="font-weight: bold; font-size: 20px">Metadata</div>
+      <div>API Version: {{ api_version }}</div>
+      <div>iotdevice-device-controller: {{ controller }}</div>
+      <div>iotdevice-device-ui: {{ ui }}</div>
+    </div>
+    <div v-if="showModal" class="error-message">
+      <h2 class="error-title">Error!</h2>
+      <p class="error-message"> Speed cannot be more than max allowed speed limits. Please wait while the
+            software reverts to the last known good state.</p>
     </div>
   </div>
 </template>
 
 <script>
 import AppHeader from '../components/AppHeader.vue';
+import axios from 'axios';
 export default {
   name: 'Auto',
   components: {
@@ -1181,12 +1191,23 @@ export default {
   data() {
     return {
       auto: {},
+      polling_refresh: null,
+      polling_api: null,
+      api_version: null,
+      controller: null,
+      ui: null,
+      showModal: false
     };
   },
   mounted: function () {
     this.$nextTick(function () {
       this.initAuto();
     });
+  },
+  created() {
+    this.loadData();
+    this.pollApi();
+    this.pollUpdate();
   },
   methods: {
     initAuto() {
@@ -1232,6 +1253,11 @@ export default {
         'rotate(' + (this.auto.config.speed * 1.5 - 120) + 'deg)';
       this.auto.g2.style.transform =
         'rotate(' + (this.auto.config.speed * 0.5 - 90) + 'deg)';
+
+      this.version_1();
+      this.startVehicle();
+
+      this.speedchange(0);
 
     },
     startVehicle() {
@@ -1286,7 +1312,6 @@ export default {
         this.auto.root.classList.add(this.auto.config.version);
     },
     speedchange(target) {
-        console.log(this.auto.config.speed)
         if (this.auto.config.speed < target) {
           //speeding up
           clearInterval(this.auto.speedInt);
@@ -1336,7 +1361,76 @@ export default {
           console.log("Bas Gaza aşkım")
           this.speedchange(120);
         }
+    },
+    async loadData() {
+      var url;
+      const api_version = await axios.get('http://localhost:4040/version');
+      this.api_version = api_version.data.version
+      if(this.api_version == 1) {
+        this.version_1();
+        const speed_v1 = await axios.get('http://localhost:4040/v1/speed');
+        this.speedchange(speed_v1.data.speed);
+      }
+
+      if(this.api_version == 2) {
+        this.version_2();
+        const speed_v2 = await axios.get('http://localhost:4040/v2/speed');
+        this.speedchange(speed_v2.data.speed);
+
+        if (speed_v2.data.speed > speed_v2.data.max_speed) {
+          this.showModal = true;
+          await this.revert();
+          const res = await axios.get('http://localhost:4040/v2/speed');
+          this.speedchange(speed_v2.data.speed);
+        }
+
+        if (speed_v2.data.speed <= speed_v2.data.max_speed) {
+          this.showModal = false;
+        }
+
+      }
+
+      const snaps = await axios.get('http://localhost:4500/list');
+      snaps.data.result.forEach((entry) => {
+        if (entry.name === 'iotdevice-device-controller') {
+          this.controller = entry.revision;
+        }
+      });
+
+      snaps.data.result.forEach((entry) => {
+        if (entry.name === 'iotdevice-device-ui') {
+          this.ui = entry.revision;
+        }
+      });
+
+    },
+    async refresh() {
+      if( !this.auto.config.on ) {
+        const res = await axios.post('http://localhost:4500/refresh');
+        console.log(JSON.stringify(res));
+      }
+
+    },
+    async revert() {
+      const res = await axios.post('http://localhost:4500/revert', {
+        name: 'iotdevice-device-controller',
+      });
+      console.log(JSON.stringify(res));
+    },
+    pollApi() {
+      this.polling_api = setInterval(() => {
+        this.loadData();
+      }, 1000);
+    },
+    pollUpdate() {
+      this.polling_refresh = setInterval(() => {
+        this.refresh();
+      }, 45000);
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.polling_api);
+    clearInterval(this.polling_refresh);
   },
 };
 </script>
@@ -1511,4 +1605,23 @@ export default {
 #auto2.V2_1 #dash2 {
   display: block;
 }
+
+.error-message {
+  background-color: #ffdddd;
+  padding: 20px;
+  border: 1px solid #f00;
+  border-radius: 5px;
+}
+
+.error-title {
+  color: #f00;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: #000;
+  font-size: 16px;
+}
+
 </style>
