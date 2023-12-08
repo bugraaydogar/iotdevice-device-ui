@@ -8,14 +8,9 @@ description: |
 grade: stable
 confinement: strict
 
-architectures:
-  - build-on: arm64
-  - build-on: amd64
-
-
 apps:
   ui-app:
-    command: bin/npm run dev
+    command: usr/bin/npm run dev
   ui-service:
     command: bin/http-server $SNAP/static -p 4000 --cors
     daemon: simple
@@ -31,10 +26,14 @@ apps:
       - snapd-control
 
 parts:
+  npm-deps:
+    plugin: nil
+    stage-snaps:
+      - nodejs-binaries
+
   ui:
     plugin: npm
-    npm-include-node: true
-    npm-node-version: 16.15.0
+    after: [npm-deps]
     source: app
     build-packages:
       - build-essential
@@ -49,8 +48,7 @@ parts:
 
   http-server:
     plugin: npm
-    npm-include-node: true
-    npm-node-version: 16.15.0
+    after: [npm-deps]
     source: https://github.com/http-party/http-server.git
     source-tag: v14.1.0
 
