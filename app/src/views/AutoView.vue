@@ -1153,9 +1153,9 @@
 
     <div>
       <div class="btn_group">
-        <a class="btn" id="btn_init" @click="startVehicle"
-          >Start/Stop vehicle</a
-        >
+        <a class="btn" id="btn_init" @click="startVehicle(true)">Start vehicle</a>
+        <a class="btn" id="btn_init" @click="startVehicle(false)">Stop vehicle</a>
+
         <!-- <a class="btn" id="btn_lights" @click="toggleLights">Toggle lights</a>
         <a class="btn" id="btn_beam" @click="toggleFullBeam">Toggle fullbeam</a>
         <a class="btn" id="btn_seat" @click="toggleSeatBelt">Toggle seatbelt</a>
@@ -1257,18 +1257,23 @@ export default {
         'rotate(' + (this.auto.config.speed * 0.5 - 90) + 'deg)';
 
       this.version_1();
-      this.startVehicle();
+      this.startVehicle(true);
 
       this.speedchange(0);
 
     },
-    startVehicle() {
+    startVehicle(isStarting) {
+      // Set the speed of the vehicle to 0
       this.auto.config.speed = 0;
 
+      // Rotate the vehicle's style based on the parameter
       this.auto.g2.style.transform =
-        'rotate(' + (this.auto.config.on ? -120 : -90) + 'deg)';
+        'rotate(' + (isStarting ? -120 : -90) + 'deg)';
 
-      this.auto.config.on = !this.auto.config.on;
+      // Toggle the on/off state of the vehicle
+      this.auto.config.on = isStarting;
+
+      // Toggle the 'on' class in the root element based on the on/off state
       this.auto.root.classList.toggle('on', this.auto.config.on);
     },
     toggleLights() {
@@ -1307,11 +1312,13 @@ export default {
         this.auto.root.classList.remove('V1_1', 'V2_1');
         this.auto.config.version = 'V1_1';
         this.auto.root.classList.add(this.auto.config.version);
+        this.startVehicle(true);
     },
     version_2() {
         this.auto.root.classList.remove('V1_1', 'V2_1');
         this.auto.config.version = 'V2_1';
         this.auto.root.classList.add(this.auto.config.version);
+        this.startVehicle(true);
     },
     speedchange(target) {
         if (this.auto.config.speed < target) {
