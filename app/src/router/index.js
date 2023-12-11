@@ -8,12 +8,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: OtaView
+      component: AutoView
     },
     {
-      path: '/auto',
-      name: 'auto',
-      component: AutoView
+      path: '/ota',
+      name: 'ota',
+      component: OtaView
     },
     { 
       path: '/:pathMatch(.*)*',

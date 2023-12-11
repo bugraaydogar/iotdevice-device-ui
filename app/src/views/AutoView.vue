@@ -1196,7 +1196,8 @@ export default {
       api_version: null,
       controller: null,
       ui: null,
-      showModal: false
+      showModal: false,
+      baseURL : 'http://' + window.location.hostname
     };
   },
   mounted: function () {
@@ -1205,6 +1206,7 @@ export default {
     });
   },
   created() {
+    console.log(this.baseURL);
     this.loadData();
     this.pollApi();
     this.pollUpdate();
@@ -1363,24 +1365,23 @@ export default {
         }
     },
     async loadData() {
-      var url;
-      const api_version = await axios.get('http://localhost:4040/version');
+      const api_version = await axios.get(this.baseURL + ':4040/version');
       this.api_version = api_version.data.version
       if(this.api_version == 1) {
         this.version_1();
-        const speed_v1 = await axios.get('http://localhost:4040/v1/speed');
+        const speed_v1 = await axios.get(this.baseURL + ':4040/v1/speed');
         this.speedchange(speed_v1.data.speed);
       }
 
       if(this.api_version == 2) {
         this.version_2();
-        const speed_v2 = await axios.get('http://localhost:4040/v2/speed');
+        const speed_v2 = await axios.get(this.baseURL + ':4040/v2/speed');
         this.speedchange(speed_v2.data.speed);
 
         if (speed_v2.data.speed > speed_v2.data.max_speed) {
           this.showModal = true;
           await this.revert();
-          const res = await axios.get('http://localhost:4040/v2/speed');
+          const res = await axios.get(this.baseURL + ':4040/v2/speed');
           this.speedchange(speed_v2.data.speed);
         }
 
@@ -1390,7 +1391,7 @@ export default {
 
       }
 
-      const snaps = await axios.get('http://localhost:4500/list');
+      const snaps = await axios.get(this.baseURL + ':4500/list');
       snaps.data.result.forEach((entry) => {
         if (entry.name === 'iotdevice-device-controller') {
           this.controller = entry.revision;
@@ -1406,13 +1407,13 @@ export default {
     },
     async refresh() {
       if( !this.auto.config.on ) {
-        const res = await axios.post('http://localhost:4500/refresh');
+        const res = await axios.post(this.baseURL + ':4500/refresh');
         console.log(JSON.stringify(res));
       }
 
     },
     async revert() {
-      const res = await axios.post('http://localhost:4500/revert', {
+      const res = await axios.post(this.baseURL + ':4500/revert', {
         name: 'iotdevice-device-controller',
       });
       console.log(JSON.stringify(res));

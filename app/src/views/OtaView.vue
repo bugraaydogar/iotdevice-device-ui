@@ -92,16 +92,20 @@ export default {
       battery_level: 0,
       polling_refresh: null,
       showModal: false,
+      baseURL : window.location.href.split(':')[0]
     };
   },
   created() {
+
+    console.log(this.baseURL);
     this.loadData();
     this.pollBattery();
     this.pollUpdate();
   },
   methods: {
     enforce(seq) {
-      axios.post('http://localhost:4500/enforce', { name: seq });
+      var url = baseURL + ":4500/enforce";
+      axios.post(url, { name: seq });
     },
     forget() {
       axios.post('http://localhost:4500/forget');
