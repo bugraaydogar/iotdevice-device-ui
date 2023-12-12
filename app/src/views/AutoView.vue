@@ -1194,6 +1194,7 @@ export default {
       polling_refresh: null,
       polling_api: null,
       api_version: null,
+      prev_api_version: null,
       controller: null,
       ui: null,
       showModal: false,
@@ -1312,13 +1313,12 @@ export default {
         this.auto.root.classList.remove('V1_1', 'V2_1');
         this.auto.config.version = 'V1_1';
         this.auto.root.classList.add(this.auto.config.version);
-        this.startVehicle(true);
+
     },
     version_2() {
         this.auto.root.classList.remove('V1_1', 'V2_1');
         this.auto.config.version = 'V2_1';
         this.auto.root.classList.add(this.auto.config.version);
-        this.startVehicle(true);
     },
     speedchange(target) {
         if (this.auto.config.speed < target) {
@@ -1373,23 +1373,33 @@ export default {
     },
     async loadData() {
       const api_version = await axios.get(this.baseURL + ':4040/version');
-      this.api_version = api_version.data.version
+      this.api_version = api_version.data.version;
+
+      if(this.prev_api_version !== null && this.api_version !== this.prev_api_version) {
+        this.startVehicle(true);
+      }
+
+      this.prev_api_version = this.api_version;
+
       if(this.api_version == 1) {
         this.version_1();
         const speed_v1 = await axios.get(this.baseURL + ':4040/v1/speed');
-        this.speedchange(speed_v1.data.speed);
+        if(this.auto.config.on)
+          this.speedchange(speed_v1.data.speed);
       }
 
       if(this.api_version == 2) {
         this.version_2();
         const speed_v2 = await axios.get(this.baseURL + ':4040/v2/speed');
-        this.speedchange(speed_v2.data.speed);
+        if(this.auto.config.on)
+          this.speedchange(speed_v2.data.speed);
 
         if (speed_v2.data.speed > speed_v2.data.max_speed) {
           this.showModal = true;
           await this.revert();
           const res = await axios.get(this.baseURL + ':4040/v2/speed');
-          this.speedchange(speed_v2.data.speed);
+          if(this.auto.config.on)
+            this.speedchange(speed_v2.data.speed);
         }
 
         if (speed_v2.data.speed <= speed_v2.data.max_speed) {
