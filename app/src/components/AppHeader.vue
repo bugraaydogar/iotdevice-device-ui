@@ -23,7 +23,7 @@ export default {
   text-align: center;
   background: #222;
   img {
-    width: 157px;
+    width: 200px;
     height: 50px;
   }
 }

@@ -1194,7 +1194,7 @@ export default {
       polling_refresh: null,
       polling_api: null,
       api_version: null,
-      prev_api_version: null,
+      prev_ctrl_version: null,
       controller: null,
       ui: null,
       showModal: false,
@@ -1375,12 +1375,6 @@ export default {
       const api_version = await axios.get(this.baseURL + ':4040/version');
       this.api_version = api_version.data.version;
 
-      if(this.prev_api_version !== null && this.api_version !== this.prev_api_version) {
-        this.startVehicle(true);
-      }
-
-      this.prev_api_version = this.api_version;
-
       if(this.api_version == 1) {
         this.version_1();
         const speed_v1 = await axios.get(this.baseURL + ':4040/v1/speed');
@@ -1412,6 +1406,10 @@ export default {
       snaps.data.result.forEach((entry) => {
         if (entry.name === 'iotdevice-device-controller') {
           this.controller = entry.revision;
+          if(this.prev_ctrl_version !== null && this.controller !== this.prev_ctrl_version) {
+            this.startVehicle(true);
+          }
+          this.prev_ctrl_version = this.controller;
         }
       });
 
