@@ -1,6 +1,6 @@
 <template>
   <app-header />
-  <h1>Auto Demo</h1>
+  <h1>Automotive OTA Demo</h1>
 
   <div id="auto2">
     <svg
